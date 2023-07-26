@@ -59,7 +59,7 @@ def censor_batch(x, safety_checker_adj: float):
     index = 0
     for p in predictions:
         # try:
-            safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safety')['confidence']
+            safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safe')['confidence']
             naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
             if safety > 0.7 + safety_checker_adj or naked > 0.5 + safety_checker_adj: 
                 hwc = x.shape
