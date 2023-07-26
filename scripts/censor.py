@@ -52,8 +52,10 @@ def numpy_to_pil(images):
 
 
 def censor_batch(x, safety_checker_adj: float):
-    pil_images = numpy_to_pil(x)
+    x_samples_ddim_numpy = x.cpu().permute(0, 2, 3, 1).numpy()
+    pil_images = numpy_to_pil(x_samples_ddim_numpy)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
+
     index = 0
     for p in predictions:
         try:
