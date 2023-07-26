@@ -54,7 +54,7 @@ def numpy_to_pil(images):
 def censor_batch(x, safety_checker_adj: float):
     pil_images = numpy_to_pil(x)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
-    x = torch.from_numpy(x_checked_image).permute(0, 3, 1, 2)
+    x = torch.from_numpy(x).permute(0, 3, 1, 2)
     
     index = 0
     for p in predictions:
