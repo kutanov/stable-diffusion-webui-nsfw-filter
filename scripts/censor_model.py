@@ -90,6 +90,10 @@ class ONNXModel:
         output = [dict(zip(out_keys, group)) for group in zip(labels, confs)]
         sorted_output = {"predictions": sorted(output, key=lambda k: k["confidence"], reverse=True)}
         return sorted_output
+        
+    def __del__(self):
+        del self.session
+        
 EXPORT_MODEL_VERSION=1
 model = ONNXModel(dir_path="model.onnx")
 model.load()
