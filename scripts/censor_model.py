@@ -32,8 +32,8 @@ class ONNXModel:
     def load(self) -> None:
         """Load the model from path to model file"""
         # Load ONNX model as session.
-        # self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CUDAExecutionProvider'])
-        self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CPUExecutionProvider'])
+        self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CUDAExecutionProvider'])
+        # self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CPUExecutionProvider'])
 
     def predict(self, image: Image.Image) -> dict:
         """
