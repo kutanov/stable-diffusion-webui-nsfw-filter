@@ -74,34 +74,34 @@ def censor_batch(x, safety_checker_adj: float):
     return x
 
 
-# class NsfwCheckScript(scripts.Script):
-#     def title(self):
-#         return "NSFW check"
+class NsfwCheckScript(scripts.Script):
+    def title(self):
+        return "NSFW check"
 
-#     def show(self, is_img2img):
-#         return scripts.AlwaysVisible
+    def show(self, is_img2img):
+        return scripts.AlwaysVisible
 
-#     def postprocess_batch(self, p, *args, **kwargs):
-#         """
-#         Args:
-#             p:
-#             *args:
-#                 args[0]: enable_nsfw_filer. True: NSFW filter enabled; False: NSFW filter disabled
-#                 args[1]: safety_checker_adj
-#             **kwargs:
-#         Returns:
-#             images
-#         """
+    def postprocess_batch(self, p, *args, **kwargs):
+        """
+        Args:
+            p:
+            *args:
+                args[0]: enable_nsfw_filer. True: NSFW filter enabled; False: NSFW filter disabled
+                args[1]: safety_checker_adj
+            **kwargs:
+        Returns:
+            images
+        """
 
-#         images = kwargs['images']
-#         if args[0] is True:
-#             images[:] = censor_batch(images, args[1])[:]
+        images = kwargs['images']
+        if args[0] is True:
+            images[:] = censor_batch(images, args[1])[:]
 
-#     def ui(self, is_img2img):
-#         enable_nsfw_filer = gr.Checkbox(label='Enable NSFW filter',
-#                                         value=False,
-#                                         elem_id=self.elem_id("enable_nsfw_filer"))
-#         safety_checker_adj = gr.Slider(label="Safety checker adjustment",
-#                                        minimum=-0.5, maximum=0.5, value=0.0, step=0.001,
-#                                        elem_id=self.elem_id("safety_checker_adj"))
-#         return [enable_nsfw_filer, safety_checker_adj]
+    def ui(self, is_img2img):
+        enable_nsfw_filer = gr.Checkbox(label='Enable NSFW filter',
+                                        value=False,
+                                        elem_id=self.elem_id("enable_nsfw_filer"))
+        safety_checker_adj = gr.Slider(label="Safety checker adjustment",
+                                       minimum=-0.5, maximum=0.5, value=0.0, step=0.001,
+                                       elem_id=self.elem_id("safety_checker_adj"))
+        return [enable_nsfw_filer, safety_checker_adj]
