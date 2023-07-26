@@ -9,7 +9,7 @@ class ONNXModel:
     def __init__(self, dir_path) -> None:
         print(dir_path)
         """Method to get name of model file. Assumes model is in the parent directory for script."""
-        model_dir = os.path.dirname(dir_path)
+        model_dir = os.path.dirname(__file__)
         with open(os.path.join(model_dir, "signature.json"), "r") as f:
             self.signature = json.load(f)
         self.model_file = os.path.join(model_dir, self.signature.get("filename"))
@@ -34,7 +34,7 @@ class ONNXModel:
         # Load ONNX model as session.
         # self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CUDAExecutionProvider'])
         self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CPUExecutionProvider'])
-        
+
     def predict(self, image: Image.Image) -> dict:
         """
         Predict with the ONNX session!
