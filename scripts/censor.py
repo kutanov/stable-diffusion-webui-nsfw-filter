@@ -58,7 +58,7 @@ def censor_batch(x, safety_checker_adj: float):
     
     index = 0
     for p in predictions:
-        try:
+        # try:
             safety = next(filter(lambda predicate: predicate.label == 'Safety',  p['predictions'])['confidence'])
             naked = next(filter(lambda predicate: predicate.label == 'Naked', p['predictions'] )['confidence'])
             if safety > 0.7 + safety_checker_adj or naked > 0.5 + safety_checker_adj: 
@@ -69,9 +69,9 @@ def censor_batch(x, safety_checker_adj: float):
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
                 x[index] = y
             index += 1
-        except Exception as e:
-            logger.warning(e)
-            index += 1
+        # except Exception as e:
+        #     logger.warning(e)
+        #     index += 1
 
     return x.permute(0, 2, 3, 1)
 
