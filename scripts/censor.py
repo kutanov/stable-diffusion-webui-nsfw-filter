@@ -59,8 +59,8 @@ def censor_batch(x, safety_checker_adj: float):
     index = 0
     for p in predictions:
         # try:
-            safety = list(filter(lambda predicate: predicate.label == 'Safety',  p['predictions'])[0]['confidence'])
-            naked = list(filter(lambda predicate: predicate.label == 'Naked', p['predictions'] )[0]['confidence'])
+            safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safety')['confidence']
+            naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
             if safety > 0.7 + safety_checker_adj or naked > 0.5 + safety_checker_adj: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
