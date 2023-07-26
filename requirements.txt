@@ -1,2 +1,1 @@
 onnxruntime-gpu
-diffusers
