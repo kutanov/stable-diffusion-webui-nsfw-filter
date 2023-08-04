@@ -9,7 +9,7 @@ import time
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 print(device)
 
-from models import NSFWModel_L14, NSFWModel_B32, NSFWModel_H14
+from scripts.models import NSFWModel_L14, NSFWModel_B32, NSFWModel_H14
 
 def build_inference_model(head_path: str, model_name: str, dataset_name: str, device: str = 'cuda'):
 
