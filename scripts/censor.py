@@ -18,7 +18,7 @@ from scripts.image_censor import model as onnx_model
 from scripts.prompt_censor import is_prompt_safe
 
 from modules import scripts, images
-from image_censor2 import is_image_safe
+from scripts.image_censor2 import is_image_safe
 
 
 logger = logging.get_logger(__name__)
