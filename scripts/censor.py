@@ -92,11 +92,11 @@ class NsfwCheckScript(scripts.Script):
             y = Image.open(warning_image).convert("RGB")
             y = (np.array(y) / 255.0).astype("float32")
             images = [y]
-            return Processed(p, y, p.seed, proc.info)
+            return Processed(p, y, p.seed, '')
         else:
             proc = process_images(p)
             image = proc.images
-        return Processed(p, image, p.seed, proc.info)
+            return Processed(p, image, p.seed, proc.info)
 
         
 
