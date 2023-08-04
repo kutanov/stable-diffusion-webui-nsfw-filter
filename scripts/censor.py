@@ -53,14 +53,16 @@ def numpy_to_pil(images):
 
 
 def censor_batch(x, safety_checker_adj: float):
-    pil_images = numpy_to_pil(x)
+    x_samples_ddim_numpy = x.cpu().permute(0, 2, 3, 1).numpy()
+    pil_images = numpy_to_pil(x_samples_ddim_numpy)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
+    
     index = 0
     for p in predictions:
         try:
-            safety = next(filter(lambda predicate: predicate.label == 'Safety',  p['predictions'])['confidence'])
-            naked = next(filter(lambda predicate: predicate.label == 'Naked', p['predictions'] )['confidence'])
-            if safety < 0.8  and naked > 0.5 + safety_checker_adj: 
+            safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safe')['confidence']
+            naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
+            if safety < 0.7 + safety_checker_adj or naked > 0.5 + safety_checker_adj: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
                 y = (np.array(y) / 255.0).astype("float32")
