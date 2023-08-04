@@ -53,7 +53,7 @@ def predict_single_image_path(img, head, backbone, pre_processing):
 
     return c[0][0]
 
-head, backbone, pre_procesing = build_inference_model('./scripts/clip_ViT-B-32_openai_binary_nsfw_head.pth', 
+head, backbone, pre_procesing = build_inference_model('scripts/clip_ViT-B-32_openai_binary_nsfw_head.pth', 
                                                       'ViT-B-32', 'openai', device)
 start = time.time()
 
