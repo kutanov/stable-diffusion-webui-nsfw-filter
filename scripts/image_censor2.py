@@ -42,7 +42,7 @@ def build_inference_model(head_path: str, model_name: str, dataset_name: str, de
     return head, backbone, pre_processing
 
 @torch.no_grad()
-def predict_single_image_path(img_path, head, backbone, pre_processing):
+def predict_single_image_path(img, head, backbone, pre_processing):
 
     # img = Image.open(img_path)
     x = pre_processing(img).to(device)
@@ -51,12 +51,13 @@ def predict_single_image_path(img_path, head, backbone, pre_processing):
     p = F.normalize(p)
     c = head(p)
 
-    print(f'{img_path} is NSFW score ({c[0][0]})')
+    return c[0][0]
 
 head, backbone, pre_procesing = build_inference_model('clip_ViT-B-32_openai_binary_nsfw_head.pth', 
                                                       'ViT-B-32', 'openai', device)
 start = time.time()
 
 def is_image_safe(img):
-    if predict_single_image_path(img, head, backbone, pre_procesing) < 1:
+    if predict_single_image_path(img, head, backbone, pre_procesing) < 0.999:
         return True
+    return False

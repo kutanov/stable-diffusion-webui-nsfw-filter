@@ -18,6 +18,7 @@ from scripts.image_censor import model as onnx_model
 from scripts.prompt_censor import is_prompt_safe
 
 from modules import scripts, images
+from image_censor2 import is_image_safe
 
 
 logger = logging.get_logger(__name__)
@@ -71,7 +72,7 @@ def censor_batch(x, safety_checker_adj: float):
             naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
             print('safety is' + str(safety))
             print('naked is' + str(naked))
-            if safety < 0.7 or naked > 0.5: 
+            if safety < 0.7 or naked > 0.5 or is_image_safe(x) == False: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
                 y = (np.array(y) / 255.0).astype("float32")
