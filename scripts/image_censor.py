@@ -32,8 +32,8 @@ class ONNXModel:
     def load(self) -> None:
         """Load the model from path to model file"""
         # Load ONNX model as session.
-        self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CUDAExecutionProvider'])
-        # self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CPUExecutionProvider'])
+        # self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CUDAExecutionProvider'])
+        self.session = rt.InferenceSession(path_or_bytes=self.model_file, providers=['CPUExecutionProvider'])
 
     def predict(self, image: Image.Image) -> dict:
         """
@@ -90,13 +90,8 @@ class ONNXModel:
         output = [dict(zip(out_keys, group)) for group in zip(labels, confs)]
         sorted_output = {"predictions": sorted(output, key=lambda k: k["confidence"], reverse=True)}
         return sorted_output
-        
-    def __del__(self):
-        del self.session
-        
 EXPORT_MODEL_VERSION=1
-path_to_model = os.path.join(os.path.dirname(__file__), '../models/visual_detector.onnx')
-model = ONNXModel(dir_path=path_to_model)
+model = ONNXModel(dir_path="visual_detector.onnx")
 model.load()
 
 
