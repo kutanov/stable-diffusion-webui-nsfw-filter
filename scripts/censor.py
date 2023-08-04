@@ -86,10 +86,10 @@ class NsfwCheckScript(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible
     
-    def process(self, p, *args):
-        if is_prompt_safe(p.prompt) is False:
-            print("prompt is unsafe " + p.prompt)
-            p.prompt = ''
+    # def process(self, p, *args):
+    #     if is_prompt_safe(p.prompt) is False:
+    #         print("prompt is unsafe " + p.prompt)
+    #         p.prompt = ''
         
 
     def postprocess_batch(self, p, *args, **kwargs):
@@ -103,8 +103,16 @@ class NsfwCheckScript(scripts.Script):
         Returns:
             images
         """
-
         images = kwargs['images']
+        if is_prompt_safe(p.prompt) is False:
+            for image in images:
+                hwc = image.shape
+                y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
+                y = (np.array(y) / 255.0).astype("float32")
+                y = torch.from_numpy(y)
+                y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
+                image = y
+
         if args[0] is True:
             images[:] = censor_batch(images, args[1])[:]
 
