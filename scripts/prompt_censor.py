@@ -10,7 +10,7 @@ def is_prompt_safe(prompt):
    result = pipe("prompt")
    if result and result[0] is not None:
       if result[0]['label'] == "NSFW":
-         if result['score'] > 0.4:
+         if result[0]['score'] > 0.4:
             return False
    else:
       return True
