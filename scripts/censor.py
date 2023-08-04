@@ -69,6 +69,8 @@ def censor_batch(x, safety_checker_adj: float):
         try:
             safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safe')['confidence']
             naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
+            print('safety is' + safety)
+            print('naked is' + naked)
             if safety < 0.7 or naked > 0.5: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
@@ -117,7 +119,7 @@ class NsfwCheckScript(scripts.Script):
         x = torch.from_numpy(images).permute(0, 3, 1, 2)
         if args[0] is True:
             if is_prompt_safe(p.prompt) is False:
-                print('unsafe prompt' + p.prompt)
+                print('unsafe prompt ' + p.prompt)
                 index = 0
                 for image in images:
                     hwc = x.shape
