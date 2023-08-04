@@ -105,7 +105,7 @@ class NsfwCheckScript(scripts.Script):
         """
         images = kwargs['images']
         x = torch.from_numpy(images).permute(0, 3, 1, 2)
-        if is_prompt_safe(p.prompt) is False:
+        if args[0] is True and is_prompt_safe(p.prompt) is False:
             print('unsafe prompt' + p.prompt)
             index = 0
             for image in images:
@@ -117,7 +117,7 @@ class NsfwCheckScript(scripts.Script):
                 x[index] = y
             images[:] = x.permute(0, 2, 3, 1)
 
-        elif args[0] is True:
+        else:
             images[:] = censor_batch(images, args[1])[:]
 
     def ui(self, is_img2img):
