@@ -104,7 +104,7 @@ class NsfwCheckScript(scripts.Script):
             images
         """
         images = kwargs['images']
-        x = torch.from_numpy(x).permute(0, 3, 1, 2)
+        x = torch.from_numpy(images).permute(0, 3, 1, 2)
         if is_prompt_safe(p.prompt) is False:
             index = 0
             for image in images:
