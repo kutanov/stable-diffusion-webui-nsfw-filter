@@ -53,9 +53,9 @@ def numpy_to_pil(images):
 
 
 def censor_batch(x, safety_checker_adj: float):
-    x_samples_ddim_numpy = x.cpu().permute(0, 2, 3, 1).numpy()
-    pil_images = numpy_to_pil(x_samples_ddim_numpy)
+    pil_images = numpy_to_pil(x)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
+    x = torch.from_numpy(x).permute(0, 3, 1, 2)
     
     index = 0
     for p in predictions:
@@ -74,7 +74,7 @@ def censor_batch(x, safety_checker_adj: float):
             logger.warning(e)
             index += 1
 
-    return x
+    return x.permute(0, 2, 3, 1)
 
 
 class NsfwCheckScript(scripts.Script):
