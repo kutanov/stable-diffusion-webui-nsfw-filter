@@ -9,7 +9,8 @@ from diffusers.utils import logging
 # from transformers import AutoFeatureExtractor
 
 # fast nsfw
-from scripts.censor_model import model as onnx_model
+from scripts.image_censor import model as onnx_model
+from scripts.prompt_censor import is_prompt_safe
 
 from modules import scripts
 
@@ -59,7 +60,7 @@ def censor_batch(x, safety_checker_adj: float):
         try:
             safety = next(filter(lambda predicate: predicate.label == 'Safety',  p['predictions'])['confidence'])
             naked = next(filter(lambda predicate: predicate.label == 'Naked', p['predictions'] )['confidence'])
-            if safety > 0.7 + safety_checker_adj and naked > 0.5 + safety_checker_adj: 
+            if safety < 0.8  and naked > 0.5 + safety_checker_adj: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
                 y = (np.array(y) / 255.0).astype("float32")
@@ -80,6 +81,14 @@ class NsfwCheckScript(scripts.Script):
 
     def show(self, is_img2img):
         return scripts.AlwaysVisible
+    
+    def before_process(self, p):
+        if is_prompt_safe(p.prompt) is False:
+            print("prompt is unsafe")
+            y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
+            y = (np.array(y) / 255.0).astype("float32")
+            return y
+        
 
     def postprocess_batch(self, p, *args, **kwargs):
         """
