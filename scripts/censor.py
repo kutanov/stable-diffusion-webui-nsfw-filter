@@ -39,10 +39,30 @@ def numpy_to_pil(images):
 
     return pil_images
 
+
+# check and replace nsfw content
+# def check_safety(x_image, safety_checker_adj: float):
+#     global safety_feature_extractor, safety_checker
+
+#     if safety_feature_extractor is None:
+#         safety_feature_extractor = AutoFeatureExtractor.from_pretrained(safety_model_id)
+#         safety_checker = StableDiffusionSafetyChecker.from_pretrained(safety_model_id)
+
+#     safety_checker_input = safety_feature_extractor(numpy_to_pil(x_image), return_tensors="pt")
+#     x_checked_image, has_nsfw_concept = safety_checker(
+#         images=x_image,
+#         clip_input=safety_checker_input.pixel_values,
+#         safety_checker_adj=safety_checker_adj,  # customize adjustment
+#     )
+
+#     return x_checked_image, has_nsfw_concept
+
+
 def censor_batch(x, safety_checker_adj: float):
-    x_samples_ddim_numpy = x.cpu().permute(0, 2, 3, 1).numpy()
-    pil_images = numpy_to_pil(x_samples_ddim_numpy)
+    pil_images = numpy_to_pil(x)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
+    print(predictions)
+    x = torch.from_numpy(x).permute(0, 3, 1, 2)
     
     index = 0
     for p in predictions:
@@ -55,43 +75,18 @@ def censor_batch(x, safety_checker_adj: float):
                 y = (np.array(y) / 255.0).astype("float32")
                 y = torch.from_numpy(y)
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
+                try:
+                    images.save_image(transformTorchToPil(x[index].permute(0, 2, 3, 1)), p.outpath_samples, "", forced_filename=f"before_nsfw")
+                except Exception:
+                    print(f"ERROR saving generated image to path: {p.outpath_samples}")
                 x[index] = y
             index += 1
         except Exception as e:
             logger.warning(e)
+            print(e)
             index += 1
 
-    return x
-
-# def censor_batch(x, safety_checker_adj: float):
-#     pil_images = numpy_to_pil(x)
-#     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
-#     print(predictions)
-#     x = torch.from_numpy(x).permute(0, 3, 1, 2)
-    
-#     index = 0
-#     for p in predictions:
-#         try:
-#             safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safe')['confidence']
-#             naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
-#             if safety < 0.7 or naked > 0.5: 
-#                 hwc = x.shape
-#                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
-#                 y = (np.array(y) / 255.0).astype("float32")
-#                 y = torch.from_numpy(y)
-#                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
-#                 try:
-#                     images.save_image(transformTorchToPil(x[index].permute(0, 2, 3, 1)), p.outpath_samples, "", forced_filename=f"before_nsfw")
-#                 except Exception:
-#                     print(f"ERROR saving generated image to path: {p.outpath_samples}")
-#                 x[index] = y
-#             index += 1
-#         except Exception as e:
-#             logger.warning(e)
-#             print(e)
-#             index += 1
-
-#     return x.permute(0, 2, 3, 1)
+    return x.permute(0, 2, 3, 1)
 
 
 class NsfwCheckScript(scripts.Script):
