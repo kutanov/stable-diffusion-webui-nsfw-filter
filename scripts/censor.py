@@ -130,8 +130,8 @@ class NsfwCheckScript(scripts.Script):
                         print(f"ERROR saving generated image to path: {p.outpath_samples}")
                     x[index] = y
                 images[:] = x.permute(0, 2, 3, 1)
-        else:
-            images[:] = censor_batch(images, args[1])[:]
+            else:
+                images[:] = censor_batch(images, args[1])[:]
 
     def ui(self, is_img2img):
         enable_nsfw_filer = gr.Checkbox(label='Enable NSFW filter',
