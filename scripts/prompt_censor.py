@@ -7,7 +7,7 @@ pipe = pipeline("text-classification", model="Zlatislav/NSFW-Prompt-Detector")
 # models.load_state_dict = model.load_state_dict(state_dict)
 
 def is_prompt_safe(prompt):
-   result = pipe("prompt")
+   result = pipe(prompt)
    print(result)
    if result and result[0] is not None:
       if result[0]['label'] == "NSFW":

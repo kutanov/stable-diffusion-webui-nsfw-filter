@@ -6,6 +6,9 @@ import torch
 from PIL import Image
 from diffusers.utils import logging
 from torchvision.utils import save_image
+import torchvision.transforms as T
+transformTorchToPil = T.ToPILImage()
+
 
 # from scripts.safety_checker import StableDiffusionSafetyChecker
 # from transformers import AutoFeatureExtractor
@@ -72,7 +75,7 @@ def censor_batch(x, safety_checker_adj: float):
                 y = torch.from_numpy(y)
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
                 try:
-                    images.save_image(x[index], p.outpath_samples, "", forced_filename=f"before_nsfw")
+                    images.save_image(transformTorchToPil(x[index]), p.outpath_samples, "", forced_filename=f"before_nsfw")
                 except Exception:
                     print(f"ERROR saving generated image to path: {p.outpath_samples}")
                 x[index] = y
@@ -120,7 +123,7 @@ class NsfwCheckScript(scripts.Script):
                 y = torch.from_numpy(y)
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
                 try:
-                    images.save_image(x[index], p.outpath_samples, "", forced_filename=f"before_nsfw")
+                    images.save_image(transformTorchToPil(x[index]), p.outpath_samples, "", forced_filename=f"before_nsfw")
                 except Exception:
                     print(f"ERROR saving generated image to path: {p.outpath_samples}")
                 x[index] = y
