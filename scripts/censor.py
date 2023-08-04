@@ -61,6 +61,7 @@ def numpy_to_pil(images):
 def censor_batch(x, safety_checker_adj: float):
     pil_images = numpy_to_pil(x)
     predictions = [onnx_model.predict(x_sample) for x_sample in pil_images]
+    print(predictions)
     x = torch.from_numpy(x).permute(0, 3, 1, 2)
     
     index = 0
@@ -75,7 +76,7 @@ def censor_batch(x, safety_checker_adj: float):
                 y = torch.from_numpy(y)
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
                 try:
-                    images.save_image(transformTorchToPil(x[index]), p.outpath_samples, "", forced_filename=f"before_nsfw")
+                    images.save_image(transformTorchToPil(x[index].permute(0, 2, 3, 1)), p.outpath_samples, "", forced_filename=f"before_nsfw")
                 except Exception:
                     print(f"ERROR saving generated image to path: {p.outpath_samples}")
                 x[index] = y
@@ -113,22 +114,22 @@ class NsfwCheckScript(scripts.Script):
         """
         images = kwargs['images']
         x = torch.from_numpy(images).permute(0, 3, 1, 2)
-        if args[0] is True and is_prompt_safe(p.prompt) is False:
-            print('unsafe prompt' + p.prompt)
-            index = 0
-            for image in images:
-                hwc = x.shape
-                y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
-                y = (np.array(y) / 255.0).astype("float32")
-                y = torch.from_numpy(y)
-                y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
-                try:
-                    images.save_image(transformTorchToPil(x[index]), p.outpath_samples, "", forced_filename=f"before_nsfw")
-                except Exception:
-                    print(f"ERROR saving generated image to path: {p.outpath_samples}")
-                x[index] = y
-            images[:] = x.permute(0, 2, 3, 1)
-
+        if args[0] is True:
+            if is_prompt_safe(p.prompt) is False:
+                print('unsafe prompt' + p.prompt)
+                index = 0
+                for image in images:
+                    hwc = x.shape
+                    y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
+                    y = (np.array(y) / 255.0).astype("float32")
+                    y = torch.from_numpy(y)
+                    y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
+                    try:
+                        images.save_image(transformTorchToPil(x[index].permute(0, 2, 3, 1)), p.outpath_samples, "", forced_filename=f"before_nsfw")
+                    except Exception:
+                        print(f"ERROR saving generated image to path: {p.outpath_samples}")
+                    x[index] = y
+                images[:] = x.permute(0, 2, 3, 1)
         else:
             images[:] = censor_batch(images, args[1])[:]
 
