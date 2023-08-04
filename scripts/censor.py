@@ -88,7 +88,7 @@ class NsfwCheckScript(scripts.Script):
         print('checking prompt')
         if is_prompt_safe(p.prompt) is False:
             print("prompt is unsafe")
-            y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
+            y = Image.open(warning_image).convert("RGB")
             y = (np.array(y) / 255.0).astype("float32")
             return y
         
