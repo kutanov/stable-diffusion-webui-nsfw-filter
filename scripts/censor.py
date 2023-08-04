@@ -13,6 +13,8 @@ from scripts.image_censor import model as onnx_model
 from scripts.prompt_censor import is_prompt_safe
 
 from modules import scripts
+from modules.processing import Processed, process_images
+
 
 logger = logging.get_logger(__name__)
 
@@ -84,13 +86,18 @@ class NsfwCheckScript(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible
     
-    def process(self, p, *args):
-        print('checking prompt')
+    def run(self, p, *args):
         if is_prompt_safe(p.prompt) is False:
             print("prompt is unsafe")
             y = Image.open(warning_image).convert("RGB")
             y = (np.array(y) / 255.0).astype("float32")
-            return y
+            images = [y]
+            return Processed(p, y, p.seed, proc.info)
+        else:
+            proc = process_images(p)
+            image = proc.images
+        return Processed(p, image, p.seed, proc.info)
+
         
 
     def postprocess_batch(self, p, *args, **kwargs):
