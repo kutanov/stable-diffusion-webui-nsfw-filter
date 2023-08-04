@@ -86,7 +86,7 @@ class NsfwCheckScript(scripts.Script):
     def show(self, is_img2img):
         return scripts.AlwaysVisible
     
-    def run(self, p, *args):
+    def process(self, p, *args):
         if is_prompt_safe(p.prompt) is False:
             print("prompt is unsafe")
             y = Image.open(warning_image).convert("RGB")
