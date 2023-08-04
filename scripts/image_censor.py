@@ -95,7 +95,8 @@ class ONNXModel:
         del self.session
         
 EXPORT_MODEL_VERSION=1
-model = ONNXModel(dir_path="../models/model.onnx")
+path_to_model = os.path.join(os.path.dirname(__file__), '../models/visual_detector.onnx')
+model = ONNXModel(dir_path=path_to_model)
 model.load()
 
 
