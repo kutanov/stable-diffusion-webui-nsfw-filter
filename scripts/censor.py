@@ -91,8 +91,8 @@ class NsfwCheckScript(scripts.Script):
             print("prompt is unsafe")
             y = Image.open(warning_image).convert("RGB")
             y = (np.array(y) / 255.0).astype("float32")
-            images = [y]
-            return Processed(p, y, p.seed, '')
+            p.images = [y]
+            print(p)
         else:
             proc = process_images(p)
             image = proc.images
