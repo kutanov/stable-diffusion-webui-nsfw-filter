@@ -69,8 +69,8 @@ def censor_batch(x, safety_checker_adj: float):
         try:
             safety = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Safe')['confidence']
             naked = next(predicate for predicate in p['predictions'] if predicate['label'] == 'Naked')['confidence']
-            print('safety is' + safety)
-            print('naked is' + naked)
+            print('safety is' + str(safety))
+            print('naked is' + str(naked))
             if safety < 0.7 or naked > 0.5: 
                 hwc = x.shape
                 y = Image.open(warning_image).convert("RGB").resize((hwc[3], hwc[2]))
