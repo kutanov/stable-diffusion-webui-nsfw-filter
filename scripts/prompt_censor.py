@@ -9,7 +9,7 @@ pipe = pipeline("text-classification", model="Zlatislav/NSFW-Prompt-Detector")
 def is_prompt_safe(prompt):
    result = pipe("prompt")
    if result and result[0] is not None:
-      if result['label'] == "NSFW":
+      if result[0]['label'] == "NSFW":
          if result['score'] > 0.4:
             return False
    else:
