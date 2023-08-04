@@ -88,16 +88,8 @@ class NsfwCheckScript(scripts.Script):
     
     def process(self, p, *args):
         if is_prompt_safe(p.prompt) is False:
-            print("prompt is unsafe")
-            y = Image.open(warning_image).convert("RGB")
-            y = (np.array(y) / 255.0).astype("float32")
-            p.images = [y]
-            print(p)
-        else:
-            proc = process_images(p)
-            image = proc.images
-            return Processed(p, image, p.seed, proc.info)
-
+            print("prompt is unsafe " + p.prompt)
+            p.prompt = ''
         
 
     def postprocess_batch(self, p, *args, **kwargs):
