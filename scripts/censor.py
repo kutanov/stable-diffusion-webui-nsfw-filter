@@ -77,10 +77,6 @@ def censor_batch(x, safety_checker_adj: float):
                 y = (np.array(y) / 255.0).astype("float32")
                 y = torch.from_numpy(y)
                 y = torch.unsqueeze(y, 0).permute(0, 3, 1, 2)
-                try:
-                    images.save_image(transformTorchToPil(x[index].permute(0, 2, 3, 1)), p.outpath_samples, "", forced_filename=f"before_nsfw")
-                except Exception:
-                    print(f"ERROR saving generated image to path: {p.outpath_samples}")
                 x[index] = y
             index += 1
         except Exception as e:
