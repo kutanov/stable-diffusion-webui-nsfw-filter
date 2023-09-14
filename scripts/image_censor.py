@@ -91,8 +91,9 @@ class ONNXModel:
         sorted_output = {"predictions": sorted(output, key=lambda k: k["confidence"], reverse=True)}
         return sorted_output
 EXPORT_MODEL_VERSION=1
+
 model = ONNXModel(dir_path="model.onnx")
-model.load()
+# model.load()
 
 
 def predict(image):
