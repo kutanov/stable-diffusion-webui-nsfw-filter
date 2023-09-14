@@ -18,8 +18,7 @@ if gpus:
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle')), 'rb') as f:
     tokenizer = pickle.load(f)
 
-from tensorflow.keras.models import load_model
-model = load_model(os.path.abspath(os.path.join(os.path.dirname(__file__), 'nsfw_classifier.h5')), compile=False)
+model = tf.keras.models.load_model(os.path.abspath(os.path.join(os.path.dirname(__file__), 'nsfw_classifier.h5')), compile=False)
 lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     initial_learning_rate=0.01,
     decay_steps=10000,
