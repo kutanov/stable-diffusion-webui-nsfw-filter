@@ -5,10 +5,17 @@ import random
 import os
 import pickle
 
-config = tf.compat.v1.ConfigProto()
-config.gpu_options.allow_growth=True
-sess = tf.compat.v1.Session(config=config)
-tf.compat.v1.keras.backend.set_session(sess)
+gpus = tf.config.experimental.list_physical_devices('GPU')
+
+if gpus:
+  try:
+    for gpu in gpus:
+      tf.config.set_memory_growth(gpu, True)
+  except RuntimeError as e:
+    print(e)
+else:
+  print("No GPUs found!")
+
 
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
