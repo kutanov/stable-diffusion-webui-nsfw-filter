@@ -54,8 +54,8 @@ def predict_single_image_path(img, head, backbone, pre_processing):
 
     return c[0][0]
 
-head, backbone, pre_procesing = build_inference_model(os.path.abspath(os.path.join(os.path.dirname(__file__), 'clip_ViT-H-14_laion2b_s32b_b79k_binary_nsfw_head.pth')), 
-                                                      'ViT-H-14', 'openai', device)
+head, backbone, pre_procesing = build_inference_model(os.path.abspath(os.path.join(os.path.dirname(__file__), 'clip_ViT-B-32_openai_binary_nsfw_head.pth')), 
+                                                      'ViT-B-32', 'openai', device)
 start = time.time()
 
 def is_image_safe(img):

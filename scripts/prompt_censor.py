@@ -1,25 +1,12 @@
-# from transformers import pipeline
-
-# pipe = pipeline("text-classification", model="Zlatislav/NSFW-Prompt-Detector")
-
-# # path_to_model = os.path.join(os.path.dirname(__file__), '../models/prompt_detector.bin')
-# # checkpoint = torch.load(path_to_model)
-# # models.load_state_dict = model.load_state_dict(state_dict)
-
-# def is_prompt_safe(prompt):
-#     result = pipe(prompt)
-#     print(result)
-#     if result[0]['label'] == "NSFW" and result[0]['score'] > 0.99:
-#             return False
-#     return True
-
 import json
 import tensorflow as tf
 import numpy as np
 import random
 import os
-
 import pickle
+
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
+
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle')), 'rb') as f:
     tokenizer = pickle.load(f)
 
@@ -68,16 +55,6 @@ def preprocess(text, isfirst = True):
 
     return text
 
-# def postprocess(prompts, negative_prompts, outputs, print_percentage = True):
-#     for idx, i in enumerate(prompts):
-#         print('*****************************************************************')
-#         if print_percentage:
-#             print(f"prompt: {i}\nnegative_prompt: {negative_prompts[idx]}\npredict: {outputs[idx][0]} --{outputs[idx][1]}%")
-#         else:
-#             print(f"prompt: {i}\nnegative_prompt: {negative_prompts[idx]}\npredict: {outputs[idx][0]}")
-            
-# Make predictions on new data
-
 def is_prompt_safe(prompt, negative_prompt):
         prompt_arr = [prompt]
         negative_prompt_arr = [negative_prompt]
@@ -89,5 +66,3 @@ def is_prompt_safe(prompt, negative_prompt):
         y_new = model.predict([x_new, z_new])
                 
         return (np.ndarray.flatten(y_new) < 0.5)[0]
-
-is_prompt_safe('girl', 'test')
