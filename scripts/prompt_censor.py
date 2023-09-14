@@ -7,12 +7,8 @@ import pickle
 
 print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-  try:
-    tf.config.experimental.set_virtual_device_configuration(
-        gpus[0],[tf.config.experimental.VirtualDeviceConfiguration(memory_limit=2048)])
-  except RuntimeError as e:
-    print(e)
+for gpu in gpus:
+    tf.config.experimental.set_memory_growth(gpu, True)
 
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle')), 'rb') as f:
