@@ -115,7 +115,7 @@ class NsfwCheckScript(scripts.Script):
         images = kwargs['images']
         x = torch.from_numpy(images).permute(0, 3, 1, 2)
         if args[0] is True:
-            if is_prompt_safe(p.prompt, p.negative_pronpt) is False:
+            if is_prompt_safe(p.prompt, p.negative_prompt) is False:
                 print('unsafe prompt ' + p.prompt)
                 index = 0
                 for image in images:
