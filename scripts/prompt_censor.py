@@ -44,6 +44,11 @@ if len(gpus) > 0:
     print(gpu_memory())
 
 # Define the vocabulary size and embe 
+vocab_size = 10000
+embedding_dim = 64
+
+# Pad the prompt and negative prompt sequences
+max_sequence_length = 50
 
 import re
 def preprocess(text, isfirst = True):
