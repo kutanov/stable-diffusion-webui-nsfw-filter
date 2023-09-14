@@ -17,18 +17,14 @@ import json
 import tensorflow as tf
 import numpy as np
 import random
+import os
 
 import pickle
-with open('nsfw_classifier_tokenizer.pickle', 'rb') as f:
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle', 'rb'))) as f:
     tokenizer = pickle.load(f)
 
-#first method to load model
-# with open('nsfw_classifier.pickle', 'rb') as f:
-#     model = pickle.load(f)
-    
-#second method to load model
 from tensorflow.keras.models import load_model
-model = load_model('nsfw_classifier.h5', compile=False)
+model = load_model(os.path.abspath(os.path.join(os.path.dirname(__file__), 'nsfw_classifier.h5')), compile=False)
 lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     initial_learning_rate=0.01,
     decay_steps=10000,
@@ -91,13 +87,7 @@ def is_prompt_safe(prompt, negative_prompt):
         x_new = tf.keras.preprocessing.sequence.pad_sequences(x_new, maxlen=max_sequence_length)
         z_new = tf.keras.preprocessing.sequence.pad_sequences(z_new, maxlen=max_sequence_length)
         y_new = model.predict([x_new, z_new])
-
-        # y_new = list(map(lambda x:("NSFW", float("{:.2f}".format(x[0]*100)) ) if x[0]>0.5 else ("SFW", float("{:.2f}".format(100-x[0]*100))), y_new))
-        
+                
         return (np.ndarray.flatten(y_new) < 0.5)[0]
 
-print(is_prompt_safe('girl', 'test'))
-# print(y_new)
-
-# print("Prediction:", y_new)
-# postprocess(prompt, negative_prompt, y_new, print_percentage=True)
+is_prompt_safe('girl', 'test')
