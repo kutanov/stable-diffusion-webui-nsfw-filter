@@ -5,6 +5,16 @@ import random
 import os
 import pickle
 
+
+def gpu_memory():
+    out = os.popen("nvidia-smi").read()
+    ret = '0MiB'
+    for item in out.split("\n"):
+        if str(os.getpid()) in item and 'python' in item:
+            ret = item.strip().split(' ')[-2]
+    return float(ret[:-3])
+
+
 gpus = tf.config.list_physical_devices('GPU')
 
 if gpus:
@@ -30,6 +40,9 @@ lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     decay_rate=0.9)
 model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule))
 
+if len(gpus) > 0:
+    gpu_memory()
+
 # Define the vocabulary size and embe 
 
 import re
@@ -41,7 +54,6 @@ def preprocess(text, isfirst = True):
             for i in text:
                 output.append(preprocess(i))
             return(output)
-            
 
     text = re.sub('<.*?>', '', text)
     text = re.sub('\(+', '(', text)
