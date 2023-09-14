@@ -5,11 +5,13 @@ import random
 import os
 import pickle
 
-print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
-gpus = tf.config.experimental.list_physical_devices('GPU')
-for gpu in gpus:
-    tf.config.experimental.set_memory_growth(gpu, True)
+config = tf.compat.v1.ConfigProto()
+config.gpu_options.allow_growth=True
+sess = tf.compat.v1.Session(config=config)
+tf.compat.v1.keras.backend.set_session(sess)
 
+
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
 with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle')), 'rb') as f:
     tokenizer = pickle.load(f)
