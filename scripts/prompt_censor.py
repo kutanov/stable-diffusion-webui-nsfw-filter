@@ -20,7 +20,7 @@ import random
 import os
 
 import pickle
-with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle', 'rb'))) as f:
+with open(os.path.abspath(os.path.join(os.path.dirname(__file__),'nsfw_classifier_tokenizer.pickle')), 'rb') as f:
     tokenizer = pickle.load(f)
 
 from tensorflow.keras.models import load_model
