@@ -41,7 +41,7 @@ lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
 model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule))
 
 if len(gpus) > 0:
-    gpu_memory()
+    print(gpu_memory())
 
 # Define the vocabulary size and embe 
 
