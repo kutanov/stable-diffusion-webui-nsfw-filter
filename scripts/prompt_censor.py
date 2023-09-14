@@ -5,7 +5,7 @@ import random
 import os
 import pickle
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
+gpus = tf.config.list_physical_devices('GPU')
 
 if gpus:
   try:
