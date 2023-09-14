@@ -10,7 +10,7 @@ gpus = tf.config.list_physical_devices('GPU')
 if gpus:
   try:
     for gpu in gpus:
-      tf.config.set_memory_growth(gpu, True)
+      tf.config.experimental.set_memory_growth(gpu, True)
   except RuntimeError as e:
     print(e)
 else:
@@ -30,12 +30,7 @@ lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
     decay_rate=0.9)
 model.compile(optimizer = tf.keras.optimizers.Adam(learning_rate=lr_schedule))
 
-# Define the vocabulary size and embedding dimensions
-vocab_size = 10000
-embedding_dim = 64
-
-# Pad the prompt and negative prompt sequences
-max_sequence_length = 50
+# Define the vocabulary size and embe 
 
 import re
 def preprocess(text, isfirst = True):
